@@ -1,4 +1,4 @@
-import { registerUser } from "./auth.service.js";
+import { registerUser, loginUser } from "./auth.service.js";
 
 const register = async (req, res, next) => {
   try {
@@ -25,4 +25,28 @@ const register = async (req, res, next) => {
   }
 };
 
-export { register };
+const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email and password are required",
+      });
+    }
+
+    const user = await loginUser({
+      email,
+      password,
+    });
+
+    return res.status(200).json({
+      message: "User logged in successfully",
+      ...user,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export { register, login };
