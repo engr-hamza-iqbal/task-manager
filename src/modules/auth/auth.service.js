@@ -1,14 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import "dotenv/config";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@prisma/client";
-
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
-
-const prisma = new PrismaClient({ adapter });
+import prisma from "../../db/prisma.js";
 
 const registerUser = async ({ name, email, password }) => {
   const existingUser = await prisma.user.findUnique({
