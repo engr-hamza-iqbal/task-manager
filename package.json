@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "node --test tests/integration/app.test.js"
+    "test": "node --test tests/integration/app.test.js tests/unit/validation.test.js tests/unit/error.middleware.test.js"
   },
   "repository": {
     "type": "git",
