@@ -8,11 +8,7 @@ import {
 
 const create = async (req, res, next) => {
     try {
-        // console.log("Authenticated user:", req.user);
         const { title, description } = req.body;
-        if (!title) {
-            return res.status(400).json({ message: "Title is required" });
-        }
         const task = await createTask({ 
             title, 
             description, 
@@ -41,12 +37,7 @@ const getTasks = async (req, res, next) => {
 
 const getTask = async (req, res, next) => {
     try {
-        const taskId = Number(req.params.id);
-        if (Number.isNaN(taskId)) {
-            return res.status(400).json({ 
-                message: "Task ID must be a number" 
-            });
-        }
+        const taskId = req.params.id;
         const task = await getTaskById(taskId, req.user.userId);
         return res.status(200).json({
             message: "Task retrieved successfully",
@@ -58,25 +49,9 @@ const getTask = async (req, res, next) => {
 }
 const update = async (req, res, next) => {
     try {
-        const taskId = Number(req.params.id);
-
-        if (Number.isNaN(taskId)) {
-            return res.status(400).json({ 
-                message: "Task ID must be a number" 
-            });
-        }
+        const taskId = req.params.id;
 
         const { title, description, completed } = req.body;
-
-        if (
-            title === undefined &&
-            description === undefined &&
-            completed === undefined
-        ) {
-            return res.status(400).json({ 
-                message: "At least one field must be updated" 
-            });
-        }
         const data = {};
         if (title !== undefined) data.title = title;
         if (description !== undefined) data.description = description;
@@ -97,13 +72,7 @@ const update = async (req, res, next) => {
 }
 const remove = async (req, res, next) => {
     try {
-        const taskId = Number(req.params.id);
-
-        if (Number.isNaN(taskId)) {
-            return res.status(400).json({ 
-                message: "Task ID must be a number" 
-            });
-        }
+        const taskId = req.params.id;
         await deleteTask(taskId, req.user.userId);
         return res.status(200).json({
             message: "Task deleted successfully"
