@@ -12,6 +12,7 @@ const swaggerSpec = {
 	],
 	tags: [
 		{ name: "Authentication" },
+		{ name: "Users" },
 		{ name: "Tasks" },
 	],
 	components: {
@@ -114,6 +115,31 @@ const swaggerSpec = {
 				responses: {
 					200: { description: "Authentication successful" },
 					401: { description: "Invalid or missing token" },
+				},
+			},
+		},
+		"/api/auth/logout": {
+			post: {
+				tags: ["Authentication"],
+				summary: "Log out the authenticated user",
+				description: "JWTs are stateless. The client must remove its token after this response.",
+				security: [{ bearerAuth: [] }],
+				responses: {
+					200: { description: "Logout acknowledged" },
+					401: { description: "Invalid or missing token" },
+				},
+			},
+		},
+		"/api/users/me": {
+			delete: {
+				tags: ["Users"],
+				summary: "Delete the authenticated user account",
+				description: "Deletes the user and cascades deletion to the user's tasks.",
+				security: [{ bearerAuth: [] }],
+				responses: {
+					200: { description: "User account deleted successfully" },
+					401: { description: "Invalid or missing token" },
+					404: { description: "User not found" },
 				},
 			},
 		},

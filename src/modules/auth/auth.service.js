@@ -71,5 +71,4 @@ const loginUser = async ({ email, password }) => {
         email: user.email,
     }, token };
 }
-
 export { registerUser, loginUser };

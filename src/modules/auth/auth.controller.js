@@ -37,4 +37,10 @@ const login = async (req, res, next) => {
   }
 }
 
-export { register, login };
+const logout = (req, res) => {
+  res.status(200).json({
+    message: "Logged out successfully. Remove the token from the client.",
+  });
+};
+
+export { register, login, logout };
