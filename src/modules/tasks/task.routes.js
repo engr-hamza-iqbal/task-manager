@@ -7,13 +7,18 @@ import {
     update,
     remove
 } from "./task.controller.js";
+import {
+    validateCreateTask,
+    validateTaskId,
+    validateUpdateTask,
+} from "./task.validation.js";
 
 const router = express.Router();
 
-router.post("/", authenticate, create);
+router.post("/", authenticate, validateCreateTask, create);
 router.get("/", authenticate, getTasks);
-router.get("/:id", authenticate, getTask);
-router.put("/:id", authenticate, update);
-router.delete("/:id", authenticate, remove);
+router.get("/:id", authenticate, validateTaskId, getTask);
+router.put("/:id", authenticate, validateTaskId, validateUpdateTask, update);
+router.delete("/:id", authenticate, validateTaskId, remove);
 
 export default router;

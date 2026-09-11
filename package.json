@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test tests/integration/app.test.js tests/unit/validation.test.js tests/unit/error.middleware.test.js"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "prisma": "^7.10.0"
+    "prisma": "^7.10.0",
+    "supertest": "^7.2.2"
   }
 }
