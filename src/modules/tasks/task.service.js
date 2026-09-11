@@ -36,4 +36,44 @@ const getTaskById = async (taskId, userId) => {
     }
     return task;
 }
-export { createTask, getTasksByUser, getTaskById };
+
+const updateTask = async (taskId, userId, data) => {
+    const existingTask = await prisma.task.findFirst({
+        where: {
+            id: taskId,
+            userId,
+        },
+    });
+    if (!existingTask) {
+        const error = new Error("Task not found");
+        error.statusCode = 404;
+        throw error;
+    }
+    const task = await prisma.task.update({
+        where: {
+            id: taskId,
+        },
+        data,
+    });
+    return task;
+    
+}
+const deleteTask = async (taskId, userId) => {
+    const existingTask = await prisma.task.findFirst({
+        where: {
+            id: taskId,
+            userId,
+        },
+    });
+    if (!existingTask) {
+        const error = new Error("Task not found");
+        error.statusCode = 404;
+        throw error;
+    }
+    await prisma.task.delete({
+        where: {
+            id: taskId,
+        },
+    });
+}
+export { createTask, getTasksByUser, getTaskById, updateTask, deleteTask };

@@ -1,4 +1,10 @@
-import { createTask, getTasksByUser, getTaskById } from "./task.service.js";
+import { 
+    createTask, 
+    getTasksByUser, 
+    getTaskById, 
+    updateTask,
+    deleteTask
+} from "./task.service.js";
 
 const create = async (req, res, next) => {
     try {
@@ -50,5 +56,60 @@ const getTask = async (req, res, next) => {
         next(error);
     }
 }
+const update = async (req, res, next) => {
+    try {
+        const taskId = Number(req.params.id);
 
-export { create, getTasks, getTask };
+        if (Number.isNaN(taskId)) {
+            return res.status(400).json({ 
+                message: "Task ID must be a number" 
+            });
+        }
+
+        const { title, description, completed } = req.body;
+
+        if (
+            title === undefined &&
+            description === undefined &&
+            completed === undefined
+        ) {
+            return res.status(400).json({ 
+                message: "At least one field must be updated" 
+            });
+        }
+        const data = {};
+        if (title !== undefined) data.title = title;
+        if (description !== undefined) data.description = description;
+        if (completed !== undefined) data.completed = completed;
+
+        const task = await updateTask(
+            taskId, 
+            req.user.userId, 
+            data
+        );
+        return res.status(200).json({
+            message: "Task updated successfully",
+            task
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+const remove = async (req, res, next) => {
+    try {
+        const taskId = Number(req.params.id);
+
+        if (Number.isNaN(taskId)) {
+            return res.status(400).json({ 
+                message: "Task ID must be a number" 
+            });
+        }
+        await deleteTask(taskId, req.user.userId);
+        return res.status(200).json({
+            message: "Task deleted successfully"
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+export { create, getTasks, getTask, update, remove };
