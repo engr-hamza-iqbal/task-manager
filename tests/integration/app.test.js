@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { randomUUID } from "node:crypto";
 import { test } from "node:test";
 import jwt from "jsonwebtoken";
 import request from "supertest";
@@ -52,10 +53,14 @@ test("logout requires authentication", async () => {
 	assert.equal(response.body.message, "Authentication token is required");
 });
 
-test("logout acknowledges a valid token without database access", async () => {
+test("logout revokes a valid token", async () => {
 	const secret = process.env.JWT_SECRET || "test-secret";
 	process.env.JWT_SECRET = secret;
-	const token = jwt.sign({ userId: 1, email: "user@example.com" }, secret);
+	const token = jwt.sign(
+		{ userId: 1, email: "user@example.com" },
+		secret,
+		{ jwtid: randomUUID(), expiresIn: "1h" },
+	);
 
 	const response = await request(app)
 		.post("/api/auth/logout")
@@ -63,6 +68,13 @@ test("logout acknowledges a valid token without database access", async () => {
 
 	assert.equal(response.status, 200);
 	assert.match(response.body.message, /Logged out successfully/);
+
+	       const reusedTokenResponse = await request(app)
+		       .get("/api/auth/me")
+		       .set("Authorization", `Bearer ${token}`);
+
+	       assert.equal(reusedTokenResponse.status, 401);
+	       assert.equal(reusedTokenResponse.body.message, "Invalid or expired token");
 });
 
 test("account deletion requires authentication", async () => {

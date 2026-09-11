@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { randomUUID } from "node:crypto";
 import jwt from "jsonwebtoken";
 import prisma from "../../db/prisma.js";
 
@@ -62,6 +63,7 @@ const loginUser = async ({ email, password }) => {
     }
 
     const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, {
+      jwtid: randomUUID(),
       expiresIn: "1h",
     });
 
@@ -71,4 +73,14 @@ const loginUser = async ({ email, password }) => {
         email: user.email,
     }, token };
 }
-export { registerUser, loginUser };
+
+const revokeToken = async ({ jti, expiresAt }) => {
+  await prisma.revokedToken.create({
+    data: {
+      jti,
+      expiresAt,
+    },
+  });
+};
+
+export { registerUser, loginUser, revokeToken };

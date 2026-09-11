@@ -122,7 +122,7 @@ const swaggerSpec = {
 			post: {
 				tags: ["Authentication"],
 				summary: "Log out the authenticated user",
-				description: "JWTs are stateless. The client must remove its token after this response.",
+							   description: "The current JWT is revoked immediately. The client should also remove its local copy.",
 				security: [{ bearerAuth: [] }],
 				responses: {
 					200: { description: "Logout acknowledged" },

@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
+import prisma from "../db/prisma.js";
 
-const authenticate = (req, res, next) => {
+const authenticate = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -20,7 +21,20 @@ const authenticate = (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    if (!decoded.jti || !decoded.exp) {
+      throw new Error("Token does not support revocation");
+    }
+
+    const revokedToken = await prisma.revokedToken.findUnique({
+      where: { jti: decoded.jti },
+    });
+
+    if (revokedToken) {
+      throw new Error("Token has been revoked");
+    }
+
     req.user = decoded;
+    req.token = token;
 
     next();
   } catch (error) {
