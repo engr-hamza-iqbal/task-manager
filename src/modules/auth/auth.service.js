@@ -33,8 +33,15 @@ const registerUser = async ({ name, email, password }) => {
     },
   });
 
-  return user;
+  return { user, token: createToken(user) };
 };
+
+const createToken = (user) => jwt.sign(
+  { userId: user.id, email: user.email },
+  process.env.JWT_SECRET,
+  { jwtid: randomUUID(), expiresIn: "1h" },
+);
+
 const loginUser = async ({ email, password }) => {
     if (!email || !password) {
       const error = new Error("Email and password are required");
@@ -62,16 +69,11 @@ const loginUser = async ({ email, password }) => {
       throw error;
     }
 
-    const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, {
-      jwtid: randomUUID(),
-      expiresIn: "1h",
-    });
-
     return { user: {
         id: user.id,
         name: user.name,
         email: user.email,
-    }, token };
+    }, token: createToken(user) };
 }
 
 const revokeToken = async ({ jti, expiresAt }) => {

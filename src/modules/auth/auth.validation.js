@@ -24,6 +24,9 @@ const validateLogin = (req, res, next) => {
 	if (!email || !password) {
 		return next(new ApiError(400, "Email and password are required"));
 	}
+	if (!/^\S+@\S+\.\S+$/.test(email)) {
+		return next(new ApiError(400, "A valid email is required"));
+	}
 
 	next();
 };

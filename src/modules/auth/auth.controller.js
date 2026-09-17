@@ -12,7 +12,7 @@ const register = async (req, res, next) => {
 
     return res.status(201).json({
       message: "User registered successfully",
-      user,
+      ...user,
     });
   } catch (error) {
     next(error);
