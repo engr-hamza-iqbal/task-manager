@@ -11,11 +11,26 @@ jobs:
     name: Backend Lint & Tests
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: task_manager
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     env:
       NODE_ENV: test
       PORT: 3000
       JWT_SECRET: "ci-test-jwt-secret-minimum-32-chars"
-      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/task_manager?schema=public"
+      DATABASE_URL: "postgresql://postgres:password@localhost:5432/task_manager?schema=public"
       FRONTEND_URL: "http://localhost:5173"
       CORS_ORIGINS: "http://localhost:5173"
 
@@ -37,6 +52,9 @@ jobs:
 
       - name: Generate Prisma Client
         run: npx prisma generate
+
+      - name: Run Database Migrations
+        run: npx prisma migrate deploy
 
       - name: Lint Code
         run: npm run lint
