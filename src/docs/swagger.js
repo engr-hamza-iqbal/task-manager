@@ -7,10 +7,12 @@ const swaggerSpec = {
 	},
 	servers: [
 		{
-			url: "http://localhost:3000",
+			url: "/",
+			description: "Current environment",
 		},
 	],
 	tags: [
+		{ name: "Health" },
 		{ name: "Authentication" },
 		{ name: "Users" },
 		{ name: "Tasks" },
@@ -72,6 +74,28 @@ const swaggerSpec = {
 		},
 	},
 	paths: {
+		"/health": {
+			get: {
+				tags: ["Health"],
+				summary: "API Health Check",
+				description: "Returns the health status of the application for uptime monitoring and deployment verification.",
+				responses: {
+					200: {
+						description: "Service is healthy",
+						content: {
+							"application/json": {
+								schema: {
+									type: "object",
+									properties: {
+										status: { type: "string", example: "ok" },
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 		"/api/auth/register": {
 			post: {
 				tags: ["Authentication"],

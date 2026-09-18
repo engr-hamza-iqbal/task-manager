@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: task-manager-api
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npx prisma generate && npx prisma migrate deploy
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false # Set securely in Render dashboard using Supabase connection string with pooling
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false # Set in Render dashboard to match your Netlify production URL

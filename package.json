@@ -9,6 +9,10 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
+    "build": "prisma generate",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "lint": "node --check src/server.js src/app.js",
     "test": "node --test tests/integration/app.test.js tests/unit/validation.test.js tests/unit/error.middleware.test.js"
   },
   "repository": {

@@ -6,6 +6,13 @@ import request from "supertest";
 import app from "../../src/app.js";
 import swaggerSpec from "../../src/docs/swagger.js";
 
+test("GET /health returns status ok", async () => {
+	const response = await request(app).get("/health");
+
+	assert.equal(response.status, 200);
+	assert.deepEqual(response.body, { status: "ok" });
+});
+
 test("GET /api-docs/ serves the Swagger UI", async () => {
 	const response = await request(app).get("/api-docs/");
 
